@@ -1,9 +1,26 @@
 package xyz.vsl.mybatis.generator.pluginsplus;
 
+import static org.mybatis.generator.api.dom.java.JavaVisibility.PRIVATE;
+import static org.mybatis.generator.api.dom.java.JavaVisibility.PUBLIC;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.TEXT_NODE;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator._;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.__;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.a;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.depth;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.e;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.field;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.method;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.skipComments;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.traverse;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.FQJT.INTEGER;
+import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.FQJT.VOID;
+
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.mybatis.generator.api.GeneratedXmlFile;
 import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.IntrospectedTable;
-import org.mybatis.generator.api.PluginAdapter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
@@ -11,16 +28,7 @@ import org.mybatis.generator.api.dom.xml.XmlElement;
 import org.mybatis.generator.codegen.mybatis3.MyBatis3FormattingUtilities;
 import org.mybatis.generator.internal.util.StringUtility;
 
-import static org.mybatis.generator.api.dom.java.JavaVisibility.PRIVATE;
-import static org.mybatis.generator.api.dom.java.JavaVisibility.PUBLIC;
-import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.*;
-import static xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.FQJT.*;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.StringTokenizer;
-import java.util.regex.Pattern;
+import xyz.vsl.mybatis.generator.pluginsplus.MBGenerator.FindElements;
 
 /**
  * <p>This plugin adds limit and offset (top, first...skip, offset...row...fetch next, etc) clause to the Example class.</p>
@@ -470,7 +478,7 @@ public class PaginationPlugin extends IntrospectorPlugin {
         @Override
         public boolean modifyXml(XmlElement element, IntrospectedTable introspectedTable, boolean baseFields, boolean blobFields) {
             element.addElement(
-                e("if", a("test", "orderByClause != null and limit != null"),
+                e("if", a("test", "limit != null"),
                     "LIMIT",
                     e("if", a("test", "offset != null"), "${offset},"),
                     "${limit}"
